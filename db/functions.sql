@@ -106,3 +106,18 @@ begin
   return new_id;
 end;
 $$;
+
+-- ---------------------------------------------------------------------
+-- Grants: views and RPC functions aren't covered by whatever default-
+-- privilege rule gives service_role access to plain tables, so they
+-- need explicit grants or the backend gets "permission denied" even
+-- though it's using the service_role key.
+-- ---------------------------------------------------------------------
+grant select on hubs_view to service_role;
+grant select on orders_view to service_role;
+grant select on route_stops_view to service_role;
+
+grant execute on function make_point(double precision, double precision) to service_role;
+grant execute on function create_hub(uuid, text, text, text, double precision, double precision) to service_role;
+grant execute on function create_order(uuid, text, text, double precision, double precision, text, double precision, double precision, numeric, numeric, timestamptz, timestamptz, text, text, text) to service_role;
+grant execute on function create_route_stop(uuid, uuid, uuid, integer, text, timestamptz, double precision, double precision, integer) to service_role;
