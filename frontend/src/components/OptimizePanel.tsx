@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import type { Hub } from "../api";
 import { api } from "../api";
 
@@ -7,6 +7,14 @@ export function OptimizePanel({ hubs, onOptimized }: { hubs: Hub[]; onOptimized:
   const [routeDate, setRouteDate] = useState(() => new Date().toISOString().slice(0, 10));
   const [running, setRunning] = useState(false);
   const [result, setResult] = useState<string | null>(null);
+
+  // hubs loads asynchronously after this component mounts, so the initial
+  // useState above usually captures an empty list -- resync once it arrives.
+  useEffect(() => {
+    if (!hubs.some((hub) => hub.id === hubId)) {
+      setHubId(hubs[0]?.id ?? "");
+    }
+  }, [hubs, hubId]);
 
   async function handleOptimize() {
     if (!hubId) {
