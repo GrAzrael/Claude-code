@@ -61,8 +61,10 @@ create table hubs (
     created_at          timestamptz not null default now()
 );
 
-alter table tenants
-    add constraint fk_tenants_home_hub foreign key (home_hub_id) references hubs(id) deferrable initially deferred;
+-- No FK constraint on tenants.home_hub_id -> hubs.id: adding it in the same
+-- transaction as CREATE TABLE hubs (which has a geography column) trips a
+-- known PostGIS/Postgres interaction (error 55006, "pending trigger
+-- events"). Not enforced at the DB level for this phase; unused by the app.
 
 create index idx_hubs_tenant on hubs(tenant_id);
 create index idx_hubs_location on hubs using gist(location);
