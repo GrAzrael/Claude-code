@@ -1,0 +1,19 @@
+# Node
+node_modules/
+dist/
+*.log
+*.tsbuildinfo
+
+# Env files (never commit real credentials)
+.env
+.env.local
+
+# Python
+solver/.venv/
+solver/__pycache__/
+**/__pycache__/
+*.pyc
+
+# Editor/OS
+.DS_Store
+.vscode/
