@@ -24,7 +24,7 @@ schema but are explicitly out of scope here.
 | Database | Supabase (Postgres + PostGIS) | supabase.com |
 | Backend | Node.js + Express + TypeScript | Render / Railway |
 | VRP solver | Python + FastAPI + Google OR-Tools | any host with the above |
-| Routing engine | OSRM (self-hosted) | Oracle Cloud free ARM instance |
+| Routing engine | OSRM (self-hosted) | Render free web service (Docker) |
 | Geocoding | LocationIQ | 10,000 requests/day |
 | Frontend | React + Vite + Leaflet | Vercel |
 
@@ -37,6 +37,7 @@ db/          schema.sql (thin-slice tables) + functions.sql (lat/lng <-> PostGIS
 backend/     Express + TypeScript API
 solver/      FastAPI + OR-Tools VRP service
 frontend/    React + Vite + Leaflet dispatcher UI
+infra/       OSRM deployment (Render Docker service; Oracle Cloud VM script as an alternative)
 ```
 
 ## Scope
@@ -57,12 +58,15 @@ real services without accounts this session doesn't have:
 
 1. **A Supabase project** (free tier) — run `db/schema.sql` then
    `db/functions.sql` in its SQL editor, and give the backend the
-   project's URL + `service_role` key.
+   project's URL + `service_role` key. **Done** for this deployment.
 2. **A LocationIQ API key** (free tier, 10k req/day) for geocoding.
-3. **An OSRM instance** reachable over HTTP, with a Greece (or your
-   region's) `.osm.pbf` extract pre-processed for the `driving` profile.
-   The brief mentions a self-hosted Oracle Cloud free ARM VM for this —
-   that VM and its URL aren't set up yet.
+   **Done**.
+3. **An OSRM instance** reachable over HTTP. The brief's original plan
+   (self-hosted on an Oracle Cloud free ARM VM, see
+   `infra/setup-osrm.sh`) hit Oracle's account-verification wall, so the
+   default path is now `infra/osrm-render/` — a Dockerized OSRM covering
+   East Macedonia & Thrace, deployed as a free Render web service (see
+   that folder's README). Not deployed yet.
 
 Nothing here costs money on the free tiers above, but they do require
 you to create the accounts/instances and hand back the resulting
