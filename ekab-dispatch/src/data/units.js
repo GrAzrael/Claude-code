@@ -1,0 +1,63 @@
+export const UNIT_STATUSES = {
+  available: { label: 'Διαθέσιμο', color: 'emerald' },
+  dispatched: { label: 'Σε αποστολή', color: 'amber' },
+  busy: { label: 'Απασχολημένο', color: 'red' },
+  returning: { label: 'Επιστροφή στη βάση', color: 'sky' },
+}
+
+export const INITIAL_UNITS = [
+  {
+    id: 'EKAB-101',
+    vehicleType: 'Ασθενοφόρο ΜΕΘ',
+    status: 'available',
+    base: 'Κέντρο Αθήνας',
+    crew: ['Παπαδόπουλος Γ.', 'Νικολάου Ε.'],
+    lat: 37.9838,
+    lng: 23.7275,
+  },
+  {
+    id: 'EKAB-104',
+    vehicleType: 'Ασθενοφόρο ΜΕΘ',
+    status: 'dispatched',
+    base: 'Κυψέλη',
+    crew: ['Δημητρίου Κ.', 'Ιωάννου Σ.'],
+    lat: 37.9944,
+    lng: 23.7351,
+  },
+  {
+    id: 'EKAB-117',
+    vehicleType: 'Διασωστικό όχημα',
+    status: 'busy',
+    base: 'Νέα Σμύρνη',
+    crew: ['Αλεξίου Μ.', 'Γεωργίου Π.'],
+    lat: 37.9412,
+    lng: 23.7141,
+  },
+  {
+    id: 'EKAB-122',
+    vehicleType: 'Ασθενοφόρο',
+    status: 'returning',
+    base: 'Περιστέρι',
+    crew: ['Κωνσταντίνου Α.', 'Βασιλείου Δ.'],
+    lat: 38.0142,
+    lng: 23.6913,
+  },
+  {
+    id: 'EKAB-135',
+    vehicleType: 'Ασθενοφόρο',
+    status: 'available',
+    base: 'Γλυφάδα',
+    crew: ['Σταύρου Ν.', 'Μιχαήλ Ρ.'],
+    lat: 37.8686,
+    lng: 23.7534,
+  },
+  {
+    id: 'EKAB-148',
+    vehicleType: 'Ελικόπτερο ΕΚΑΒ',
+    status: 'available',
+    base: 'Αεροδρόμιο "Ελ. Βενιζέλος"',
+    crew: ['Χριστοδούλου Ι.', 'Παπαγιάννη Ξ.', 'Ρώσσιου Θ.'],
+    lat: 37.9364,
+    lng: 23.9445,
+  },
+]

@@ -15,6 +15,9 @@ import {
   Wind,
 } from 'lucide-react'
 import { useMemo, useState } from 'react'
+import { INITIAL_UNITS } from './data/units'
+import MapTab from './MapTab'
+import UnitsTab from './UnitsTab'
 
 const PROTOCOLS = [
   {
@@ -312,22 +315,13 @@ function CallReceptionTab({ callerPhone, setCallerPhone, address, setAddress, ca
   )
 }
 
-function PlaceholderTab({ icon: Icon, title, description }) {
-  return (
-    <div className="flex flex-col items-center justify-center py-24 text-center text-slate-400">
-      <Icon size={48} className="mb-4" />
-      <h3 className="text-lg font-medium text-slate-600">{title}</h3>
-      <p className="text-sm mt-1">{description}</p>
-    </div>
-  )
-}
-
 export default function EKABDispatchSystem() {
   const [activeTab, setActiveTab] = useState('reception')
   const [callerPhone, setCallerPhone] = useState('')
   const [address, setAddress] = useState('')
   const [callerName, setCallerName] = useState('')
   const [transcript, setTranscript] = useState('')
+  const [units] = useState(INITIAL_UNITS)
 
   const matches = useProtocolMatches(transcript)
 
@@ -371,20 +365,8 @@ export default function EKABDispatchSystem() {
             matches={matches}
           />
         )}
-        {activeTab === 'units' && (
-          <PlaceholderTab
-            icon={Ambulance}
-            title="Διαχείριση Μονάδων"
-            description="Η οθόνη διαθεσιμότητας και ανάθεσης ασθενοφόρων θα προστεθεί σύντομα."
-          />
-        )}
-        {activeTab === 'map' && (
-          <PlaceholderTab
-            icon={MapIcon}
-            title="Χάρτης Συμβάντων"
-            description="Η χαρτογραφική απεικόνιση κλήσεων και μονάδων θα προστεθεί σύντομα."
-          />
-        )}
+        {activeTab === 'units' && <UnitsTab units={units} />}
+        {activeTab === 'map' && <MapTab units={units} />}
       </main>
     </div>
   )
