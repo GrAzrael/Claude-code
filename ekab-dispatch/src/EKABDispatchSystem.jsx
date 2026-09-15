@@ -14,7 +14,7 @@ import {
   User,
   Wind,
 } from 'lucide-react'
-import { useMemo, useState } from 'react'
+import { useMemo, useRef, useState } from 'react'
 import { INITIAL_UNITS } from './data/units'
 import MapTab from './MapTab'
 import UnitsTab from './UnitsTab'
@@ -158,15 +158,34 @@ const PROTOCOLS = [
   },
 ]
 
+const QUICK_PHRASES = [
+  { protocolId: 'cardiac', phrase: 'πόνος στο στήθος' },
+  { protocolId: 'cardiac', phrase: 'καρδιακή προσβολή' },
+  { protocolId: 'respiratory', phrase: 'δεν μπορεί να αναπνεύσει' },
+  { protocolId: 'respiratory', phrase: 'ασθματικό' },
+  { protocolId: 'neuro', phrase: 'εγκεφαλικό' },
+  { protocolId: 'neuro', phrase: 'λιποθυμία' },
+  { protocolId: 'trauma', phrase: 'τροχαίο' },
+  { protocolId: 'trauma', phrase: 'αιμορραγία' },
+  { protocolId: 'allergic', phrase: 'αναφυλαξία' },
+  { protocolId: 'allergic', phrase: 'πρήξιμο λαιμού' },
+  { protocolId: 'obstetric', phrase: 'τοκετός' },
+  { protocolId: 'obstetric', phrase: 'σπάσιμο νερών' },
+  { protocolId: 'psychiatric', phrase: 'κρίση πανικού' },
+  { protocolId: 'psychiatric', phrase: 'θέλει να αυτοκτονήσει' },
+  { protocolId: 'diabetic', phrase: 'υπογλυκαιμία' },
+  { protocolId: 'diabetic', phrase: 'ζάχαρο' },
+].map((entry) => ({ ...entry, protocol: PROTOCOLS.find((p) => p.id === entry.protocolId) }))
+
 const COLOR_CLASSES = {
-  red: { bar: 'bg-red-500', text: 'text-red-700', bg: 'bg-red-50', ring: 'ring-red-200', icon: 'text-red-500' },
-  sky: { bar: 'bg-sky-500', text: 'text-sky-700', bg: 'bg-sky-50', ring: 'ring-sky-200', icon: 'text-sky-500' },
-  purple: { bar: 'bg-purple-500', text: 'text-purple-700', bg: 'bg-purple-50', ring: 'ring-purple-200', icon: 'text-purple-500' },
-  orange: { bar: 'bg-orange-500', text: 'text-orange-700', bg: 'bg-orange-50', ring: 'ring-orange-200', icon: 'text-orange-500' },
-  amber: { bar: 'bg-amber-500', text: 'text-amber-700', bg: 'bg-amber-50', ring: 'ring-amber-200', icon: 'text-amber-500' },
-  pink: { bar: 'bg-pink-500', text: 'text-pink-700', bg: 'bg-pink-50', ring: 'ring-pink-200', icon: 'text-pink-500' },
-  indigo: { bar: 'bg-indigo-500', text: 'text-indigo-700', bg: 'bg-indigo-50', ring: 'ring-indigo-200', icon: 'text-indigo-500' },
-  teal: { bar: 'bg-teal-500', text: 'text-teal-700', bg: 'bg-teal-50', ring: 'ring-teal-200', icon: 'text-teal-500' },
+  red: { bar: 'bg-red-500', text: 'text-red-700', bg: 'bg-red-50', ring: 'ring-red-200', icon: 'text-red-500', chipHover: 'hover:bg-red-100' },
+  sky: { bar: 'bg-sky-500', text: 'text-sky-700', bg: 'bg-sky-50', ring: 'ring-sky-200', icon: 'text-sky-500', chipHover: 'hover:bg-sky-100' },
+  purple: { bar: 'bg-purple-500', text: 'text-purple-700', bg: 'bg-purple-50', ring: 'ring-purple-200', icon: 'text-purple-500', chipHover: 'hover:bg-purple-100' },
+  orange: { bar: 'bg-orange-500', text: 'text-orange-700', bg: 'bg-orange-50', ring: 'ring-orange-200', icon: 'text-orange-500', chipHover: 'hover:bg-orange-100' },
+  amber: { bar: 'bg-amber-500', text: 'text-amber-700', bg: 'bg-amber-50', ring: 'ring-amber-200', icon: 'text-amber-500', chipHover: 'hover:bg-amber-100' },
+  pink: { bar: 'bg-pink-500', text: 'text-pink-700', bg: 'bg-pink-50', ring: 'ring-pink-200', icon: 'text-pink-500', chipHover: 'hover:bg-pink-100' },
+  indigo: { bar: 'bg-indigo-500', text: 'text-indigo-700', bg: 'bg-indigo-50', ring: 'ring-indigo-200', icon: 'text-indigo-500', chipHover: 'hover:bg-indigo-100' },
+  teal: { bar: 'bg-teal-500', text: 'text-teal-700', bg: 'bg-teal-50', ring: 'ring-teal-200', icon: 'text-teal-500', chipHover: 'hover:bg-teal-100' },
 }
 
 function normalize(text) {
@@ -205,6 +224,21 @@ function TabButton({ active, onClick, icon: Icon, children }) {
 
 function CallReceptionTab({ callerPhone, setCallerPhone, address, setAddress, callerName, setCallerName, transcript, setTranscript, matches }) {
   const topMatch = matches[0]
+  const textareaRef = useRef(null)
+
+  const handleQuickAdd = (phrase) => {
+    setTranscript((prev) => {
+      const trimmed = prev.trimEnd()
+      return trimmed ? `${trimmed}. ${phrase}` : phrase
+    })
+    requestAnimationFrame(() => {
+      const el = textareaRef.current
+      if (el) {
+        el.focus()
+        el.setSelectionRange(el.value.length, el.value.length)
+      }
+    })
+  }
 
   return (
     <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
@@ -266,11 +300,27 @@ function CallReceptionTab({ callerPhone, setCallerPhone, address, setAddress, ca
         <label className="flex items-center gap-2 text-sm font-medium text-slate-700 mb-1">
           Καταγραφή λόγων καλούντος
         </label>
+        <div className="flex flex-wrap gap-1.5 mb-2">
+          {QUICK_PHRASES.map(({ phrase, protocol }) => {
+            const colors = COLOR_CLASSES[protocol.color]
+            return (
+              <button
+                key={phrase}
+                type="button"
+                onClick={() => handleQuickAdd(phrase)}
+                className={`rounded-full px-2.5 py-1 text-xs font-medium ${colors.bg} ${colors.text} ${colors.chipHover} transition-colors`}
+              >
+                + {phrase}
+              </button>
+            )
+          })}
+        </div>
         <textarea
+          ref={textareaRef}
           value={transcript}
           onChange={(e) => setTranscript(e.target.value)}
-          placeholder="Πληκτρολογήστε ό,τι αναφέρει ο καλών σε ελεύθερο κείμενο..."
-          rows={16}
+          placeholder="Πληκτρολογήστε ό,τι αναφέρει ο καλών σε ελεύθερο κείμενο, ή χρησιμοποιήστε τα κουμπιά παραπάνω..."
+          rows={14}
           className="w-full rounded-lg border border-slate-300 px-3 py-2 text-sm font-mono leading-relaxed focus:outline-none focus:ring-2 focus:ring-red-500 focus:border-red-500 resize-none"
         />
       </div>
