@@ -1,0 +1,21 @@
+name: Keep-alive ping
+
+# Render's free web services sleep after 15 minutes of inactivity, and the
+# wake-on-request mechanism has been unreliable for the solver in practice.
+# Ping each service's health endpoint often enough that they never get the
+# chance to sleep. GitHub Actions cron on a public repo is free.
+on:
+  schedule:
+    - cron: "*/10 * * * *"
+  workflow_dispatch: {}
+
+jobs:
+  ping:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Ping backend
+        run: curl -s -o /dev/null -w "backend %{http_code}\n" https://tms-backend-9zvv.onrender.com/health
+      - name: Ping solver
+        run: curl -s -o /dev/null -w "solver %{http_code}\n" https://tms-solver.onrender.com/health
+      - name: Ping OSRM
+        run: curl -s -o /dev/null -w "osrm %{http_code}\n" "https://claude-code-61k2.onrender.com/nearest/v1/driving/24.9,41.13"
