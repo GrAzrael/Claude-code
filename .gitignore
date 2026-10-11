@@ -17,3 +17,8 @@ solver/__pycache__/
 # Editor/OS
 .DS_Store
 .vscode/
+
+# Ruflo runtime state (local, may contain session data)
+.claude-flow/
+.swarm/
+.claude/memory.db*
